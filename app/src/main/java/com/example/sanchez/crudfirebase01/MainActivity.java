@@ -55,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
     private void FirebaseConnection() {
         FirebaseApp.initializeApp(this);
         firebaseDatabase = FirebaseDatabase.getInstance();
+        /* -- Manejo de persistencia de forma incorrecta
+        firebaseDatabase.setPersistenceEnabled(true);
+        */
         databaseReference = firebaseDatabase.getReference();
     }//FirebaseConnection
 

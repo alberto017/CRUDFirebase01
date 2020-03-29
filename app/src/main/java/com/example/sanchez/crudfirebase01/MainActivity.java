@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -33,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private List<Person> personList = new ArrayList<Person>();
     ArrayAdapter<Person> arrayAdapterPersona;
 
+    Person personaSelected;
+
     //Objetos necesarios para la conexion
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
@@ -49,6 +53,18 @@ public class MainActivity extends AppCompatActivity {
         lvPerson = findViewById(R.id.lvPerson);
         FirebaseConnection();
         ListPerson();
+
+        //evento apra seleccionar elemento de la listView
+        lvPerson.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                personaSelected = (Person) adapterView.getItemAtPosition(i);
+                edtName.setText(personaSelected.getName());
+                edtLastName.setText(personaSelected.getLastName());
+                edtEmail.setText(personaSelected.getEmail());
+                edtPassword.setText(personaSelected.getPassword());
+            }//onItemClick
+        });
     }//onCreate
 
 
@@ -115,7 +131,17 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }//case
             case  R.id.icon_save: {
-                Toast.makeText(getApplicationContext(),"Item save",Toast.LENGTH_SHORT).show();
+
+                //Actualizar
+                Person person = new Person();
+                person.setId(personaSelected.getId());
+                person.setName(edtName.getText().toString().trim());
+                person.setLastName(edtLastName.getText().toString().trim());
+                person.setEmail(edtEmail.getText().toString().trim());
+                person.setPassword(edtPassword.getText().toString().trim());
+                databaseReference.child("Person").child(person.getId()).setValue(person);
+                Toast.makeText(getApplicationContext(),"Item update",Toast.LENGTH_SHORT).show();
+                cleanEdt();
                 break;
             }//case
             case R.id.icon_delete: {

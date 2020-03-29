@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
                     person.setEmail(email);
                     person.setPassword(password);
                     databaseReference.child("Person").child(person.getId()).setValue(person);
+
                     Toast.makeText(getApplicationContext(),"Item add",Toast.LENGTH_SHORT).show();
                     cleanEdt();
                 }//else
@@ -140,11 +141,17 @@ public class MainActivity extends AppCompatActivity {
                 person.setEmail(edtEmail.getText().toString().trim());
                 person.setPassword(edtPassword.getText().toString().trim());
                 databaseReference.child("Person").child(person.getId()).setValue(person);
+
                 Toast.makeText(getApplicationContext(),"Item update",Toast.LENGTH_SHORT).show();
                 cleanEdt();
                 break;
             }//case
             case R.id.icon_delete: {
+
+                Person person = new Person();
+                person.setId(personaSelected.getId());
+                databaseReference.child("Person").child(person.getId()).removeValue();
+
                 Toast.makeText(getApplicationContext(),"Item delete",Toast.LENGTH_SHORT).show();
                 break;
             }//case

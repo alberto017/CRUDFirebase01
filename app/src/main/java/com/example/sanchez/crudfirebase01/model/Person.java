@@ -3,10 +3,12 @@ package com.example.sanchez.crudfirebase01.model;
 public class Person {
 
 
-    public String id;
-    public String name;
-    public String lastName;
-    public String email;
+    private String id;
+    private String name;
+    private String lastName;
+    private String email;
+    private String password;
+
 
     public Person() {
 
@@ -43,6 +45,15 @@ public class Person {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
 
     @Override
     public String toString() {

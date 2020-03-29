@@ -1,18 +1,25 @@
 package com.example.sanchez.crudfirebase01;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.sanchez.crudfirebase01.model.Person;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
     private EditText edtEmail;
     private EditText edtPassword;
     private ListView lvPerson;
+
+    private List<Person> personList = new ArrayList<Person>();
+    ArrayAdapter<Person> arrayAdapterPersona;
 
     //Objetos necesarios para la conexion
     FirebaseDatabase firebaseDatabase;
@@ -38,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         edtPassword = findViewById(R.id.edtPassword);
         lvPerson = findViewById(R.id.lvPerson);
         FirebaseConnection();
+        ListPerson();
     }//onCreate
 
 
@@ -45,7 +56,28 @@ public class MainActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(this);
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
-    }
+    }//FirebaseConnection
+
+    private void ListPerson() {
+        databaseReference.child("Person").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                personList.clear();
+                for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    Person person = dataSnapshot1.getValue(Person.class);
+                    personList.add(person);
+
+                    arrayAdapterPersona = new ArrayAdapter<Person>(MainActivity.this, android.R.layout.simple_list_item_1, personList);
+                    lvPerson.setAdapter(arrayAdapterPersona);
+                }//for
+            }//onDataChange
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }//onCanceles
+        });
+    }//listPerson
 
 
     @Override
@@ -78,15 +110,15 @@ public class MainActivity extends AppCompatActivity {
                     cleanEdt();
                 }//else
                 break;
-            }
+            }//case
             case  R.id.icon_save: {
                 Toast.makeText(getApplicationContext(),"Item save",Toast.LENGTH_SHORT).show();
                 break;
-            }
+            }//case
             case R.id.icon_delete: {
                 Toast.makeText(getApplicationContext(),"Item delete",Toast.LENGTH_SHORT).show();
                 break;
-            }
+            }//case
         }//switch
         return super.onOptionsItemSelected(item);
     }

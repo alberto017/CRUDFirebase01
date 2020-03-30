@@ -1,5 +1,7 @@
 package com.example.sanchez.crudfirebase01;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -148,11 +150,29 @@ public class MainActivity extends AppCompatActivity {
             }//case
             case R.id.icon_delete: {
 
-                Person person = new Person();
-                person.setId(personaSelected.getId());
-                databaseReference.child("Person").child(person.getId()).removeValue();
-
-                Toast.makeText(getApplicationContext(),"Item delete",Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+                alertDialog.setMessage("Desea eliminar este elemento?")
+                        .setCancelable(false)
+                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Person person = new Person();
+                                person.setId(personaSelected.getId());
+                                databaseReference.child("Person").child(person.getId()).removeValue();
+                                Toast.makeText(getApplicationContext(),"Item delete",Toast.LENGTH_SHORT).show();
+                                cleanEdt();
+                            }//onClick
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                                cleanEdt();
+                            }//Cancel
+                        });
+                AlertDialog titulo = alertDialog.create();
+                titulo.setTitle("Alerta");
+                titulo.show();
                 break;
             }//case
         }//switch
